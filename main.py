@@ -144,14 +144,23 @@ app = FastAPI()
 
 @app.get("/movie/{movie_id}")
 def getMovie(movie_id: str):
-    imdb = movie_id
     vse = VidSrcExtractor()
-    movie = vse.get_vidsrc_stream("VidSrc PRO", f"https://vidsrc.me/embed/{imdb}")
+    movie = vse.get_vidsrc_stream("VidSrc PRO", f"https://vidsrc.me/embed/{movie_id}")
     if movie:
         return {"status": "00", "message": "link found", "movie_link" : movie}
     else:
         return {"status": "01", "message": "link not found", "movie_link" : ""}
-    
+
+
+@app.get("/tv/{movie_id}/{season_no}/{ep_no}")
+def getTvShow(movie_id: str, season_no: int, ep_no: int):
+    vse = VidSrcExtractor()
+    movie = vse.get_vidsrc_stream("VidSrc PRO", f"https://vidsrc.me/embed/{movie_id}/{season_no}/{ep_no}")
+    if movie:
+        return {"status": "00", "message": "link found", "show_link" : movie}
+    else:
+        return {"status": "01", "message": "link not found", "show_link" : ""}
+
 
 if __name__ == "__main__":
     try:
