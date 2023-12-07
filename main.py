@@ -110,7 +110,13 @@ class VidSrcExtractor:
     def get_vidsrc_stream(self, name, url) -> Optional[str]:
         req = requests.get(url)
         soup = BeautifulSoup(req.text, "html.parser")
+        f = open("tv.html", "a")
+        f.write(str(soup.find_all("div")))
+        f.close()
+
+
         sources = {attr.text: attr.get("data-hash") for attr in soup.find_all("div", {"class": "server"})}
+        print(sources)
 
         source = sources.get(name)
         if not source:
@@ -155,9 +161,10 @@ def getMovie(movie_id: str):
 @app.get("/tv/{show_id}/{season_no}/{ep_no}")
 def getTvShow(show_id: str, season_no: int, ep_no: int):
     vse = VidSrcExtractor()
-    movie = vse.get_vidsrc_stream("VidSrc PRO", f"https://vidsrc.me/embed/{show_id}/{season_no}/{ep_no}")
-    if movie:
-        return {"status": "00", "message": "link found", "show_link" : movie}
+    print(f"https://vidsrc.me/embed/{show_id}/{season_no}/{ep_no}")
+    show = vse.get_vidsrc_stream("VidSrc PRO", f"https://vidsrc.me/embed/tv?imdb={show_id}&amp;season={season_no}&amp;episode={ep_no}")
+    if show:
+        return {"status": "00", "message": "link found", "show_link" : show}
     else:
         return {"status": "01", "message": "link not found", "show_link" : ""}
 
