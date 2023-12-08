@@ -110,11 +110,7 @@ class VidSrcExtractor:
     def get_vidsrc_stream(self, name, url) -> Optional[str]:
         req = requests.get(url)
         soup = BeautifulSoup(req.text, "html.parser")
-        # f = open("tv.html", "a")
-        # f.write(str(soup.find_all("div")))
-        # f.close()
-
-
+        
         sources = {attr.text: attr.get("data-hash") for attr in soup.find_all("div", {"class": "server"})}
         print(sources)
 
@@ -151,7 +147,7 @@ app = FastAPI()
 @app.get("/movie/{movie_id}")
 def getMovie(movie_id: str):
     vse = VidSrcExtractor()
-    movie = vse.get_vidsrc_stream("VidSrc PRO", f"https://vidsrc.me/embed/{movie_id}")
+    movie = vse.get_vidsrc_stream("VidSrc PRO", f"https://vidsrc.me/embed/movie?tmdb={movie_id}")
     if movie:
         return {"status": "00", "message": "link found", "movie_link" : movie}
     else:
@@ -161,7 +157,7 @@ def getMovie(movie_id: str):
 @app.get("/tv/{show_id}/{season_no}/{ep_no}")
 def getTvShow(show_id: str, season_no: int, ep_no: int):
     vse = VidSrcExtractor()
-    show = vse.get_vidsrc_stream("VidSrc PRO", f"https://vidsrc.me/embed/tv?imdb={show_id}&season={season_no}&episode={ep_no}")
+    show = vse.get_vidsrc_stream("VidSrc PRO", f"https://vidsrc.me/embed/tv?tmdb={show_id}&season={season_no}&episode={ep_no}")
     if show:
         return {"status": "00", "message": "link found", "show_link" : show}
     else:
