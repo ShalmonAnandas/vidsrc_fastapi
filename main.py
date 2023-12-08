@@ -110,9 +110,9 @@ class VidSrcExtractor:
     def get_vidsrc_stream(self, name, url) -> Optional[str]:
         req = requests.get(url)
         soup = BeautifulSoup(req.text, "html.parser")
-        f = open("tv.html", "a")
-        f.write(str(soup.find_all("div")))
-        f.close()
+        # f = open("tv.html", "a")
+        # f.write(str(soup.find_all("div")))
+        # f.close()
 
 
         sources = {attr.text: attr.get("data-hash") for attr in soup.find_all("div", {"class": "server"})}
