@@ -161,8 +161,7 @@ def getMovie(movie_id: str):
 @app.get("/tv/{show_id}/{season_no}/{ep_no}")
 def getTvShow(show_id: str, season_no: int, ep_no: int):
     vse = VidSrcExtractor()
-    print(f"https://vidsrc.me/embed/{show_id}/{season_no}/{ep_no}")
-    show = vse.get_vidsrc_stream("VidSrc PRO", f"https://vidsrc.me/embed/tv?imdb={show_id}&amp;season={season_no}&amp;episode={ep_no}")
+    show = vse.get_vidsrc_stream("VidSrc PRO", f"https://vidsrc.me/embed/tv?imdb={show_id}&season={season_no}&episode={ep_no}")
     if show:
         return {"status": "00", "message": "link found", "show_link" : show}
     else:
