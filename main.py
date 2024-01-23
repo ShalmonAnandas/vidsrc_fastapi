@@ -3,6 +3,7 @@ import re
 import gzip
 import base64
 import requests
+from vidsrcto.vidsrc import SUPPORTED_SOURCES, VidSrcToExtractor
 
 from io import BytesIO
 from typing import Optional
@@ -180,9 +181,16 @@ app = FastAPI()
 @app.get("/movie/{movie_id}/{handler}")
 def getMovie(movie_id: str, handler: str):
     vse = VidSrcExtractor()
-    movie, subtitle = vse.get_vidsrc_stream(handler, "movie", movie_id, "eng", None, None)
-    print(movie)
-    print(subtitle)
+    if (handler == "Vidplay"):
+        vseto = VidSrcToExtractor(
+            source_name = SUPPORTED_SOURCES[0],
+            fetch_subtitles = False,
+        )
+        stream, subtitle = vseto.get_streams("movie", movie_id, None, None)
+        movie = stream[0]
+    else:
+        movie, subtitle = vse.get_vidsrc_stream(handler, "movie", movie_id, "eng", None, None)
+
     if movie:
         return {"status": "00", "message": "link found", "movie_link" : movie}
     else:
@@ -192,7 +200,15 @@ def getMovie(movie_id: str, handler: str):
 @app.get("/tv/{show_id}/{season_no}/{ep_no}/{handler}")
 def getTvShow(show_id: str, season_no: int, ep_no: int, handler: str):
     vse = VidSrcExtractor()
-    show, subtitle = vse.get_vidsrc_stream(handler, "tv", show_id, "eng", season_no, ep_no)
+    if (handler == "Vidplay"):
+        vseto = VidSrcToExtractor(
+            source_name = SUPPORTED_SOURCES[0],
+            fetch_subtitles = False,
+        )
+        stream, subtitle = vseto.get_streams("movie", show_id, season_no, ep_no)
+        show = stream[0]
+    else:
+        show, subtitle = vse.get_vidsrc_stream(handler, "tv", show_id, "eng", season_no, ep_no)
     print(show)
     print(subtitle)
     if show:
@@ -203,7 +219,7 @@ def getTvShow(show_id: str, season_no: int, ep_no: int, handler: str):
 
 if __name__ == "__main__":
     try:
-        port = os.environ.get("PORT", "5000")
+        port = os.environ.get("PORT", "6010")
         port = int(port)
     except ValueError:
         port = 5000
