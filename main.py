@@ -219,7 +219,7 @@ def getTvShow(show_id: str, season_no: int, ep_no: int, handler: str):
 
 if __name__ == "__main__":
     try:
-        port = os.environ.get("PORT", "6010")
+        port = os.environ.get("PORT", "5000")
         port = int(port)
     except ValueError:
         port = 5000
